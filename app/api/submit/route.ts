@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
       purpose,
       citizenship,
       ndaAgreed,
+      citizenshipDeclaration,
       signature,
     });
 
