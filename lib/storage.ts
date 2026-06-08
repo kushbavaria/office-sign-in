@@ -9,6 +9,7 @@ interface VisitorData {
   purpose: string;
   citizenship: string;
   ndaAgreed: boolean;
+  citizenshipDeclaration: boolean;
   signature: string;
 }
 

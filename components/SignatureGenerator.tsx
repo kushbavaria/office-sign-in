@@ -29,7 +29,7 @@ export default function SignatureGenerator({ name, onSignatureGenerated }: Signa
 
     // Set font for signature
     ctx.font = 'italic 400 32px "Bradley Hand", "Comic Sans MS", cursive, serif';
-    ctx.fillStyle = '#1a1a1a';
+    ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -49,22 +49,22 @@ export default function SignatureGenerator({ name, onSignatureGenerated }: Signa
   };
 
   return (
-    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+    <div className="border-2 border-dashed border-black rounded-lg p-4 bg-white">
       <canvas
         ref={canvasRef}
         width={400}
         height={100}
-        className="w-full bg-white rounded border border-gray-200"
+        className="w-full bg-white rounded border-2 border-black"
       />
       <div className="flex justify-between items-center mt-2">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-black">
           {signatureGenerated ? 'Signature generated from your name' : 'Enter your name to generate signature'}
         </p>
         {name && (
           <button
             type="button"
             onClick={handleRegenerate}
-            className="text-sm text-blue-600 hover:text-blue-800 underline"
+            className="text-sm text-black hover:text-black underline"
           >
             Regenerate
           </button>

@@ -15,6 +15,7 @@ export async function GET() {
       'Purpose': visitor.purpose,
       'Citizenship': visitor.citizenship,
       'NDA Agreed': visitor.ndaAgreed ? 'Yes' : 'No',
+      'Citizenship Declaration': visitor.citizenshipDeclaration ? 'Yes' : 'No',
       'Signature': '[Signature Image]',
     }));
 

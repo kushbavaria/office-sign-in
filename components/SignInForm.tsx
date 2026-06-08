@@ -11,6 +11,7 @@ interface FormData {
   purpose: string;
   citizenship: string;
   ndaAgreed: boolean;
+  citizenshipDeclaration: boolean;
 }
 
 const COUNTRIES = [
@@ -71,6 +72,7 @@ export default function SignInForm() {
     purpose: '',
     citizenship: '',
     ndaAgreed: false,
+    citizenshipDeclaration: false,
   });
 
   const [signature, setSignature] = useState<string>('');
@@ -110,6 +112,13 @@ export default function SignInForm() {
       return;
     }
 
+    if (!formData.citizenshipDeclaration) {
+      setErrorMessage('Please confirm the citizenship declaration');
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+      return;
+    }
+
     if (!signature) {
       setErrorMessage('Please generate your signature');
       setSubmitStatus('error');
@@ -143,6 +152,7 @@ export default function SignInForm() {
         purpose: '',
         citizenship: '',
         ndaAgreed: false,
+        citizenshipDeclaration: false,
       });
       setSignature('');
     } catch (error) {
@@ -154,30 +164,30 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div className="min-h-screen bg-white py-12 px-4">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-black">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Office Sign In</h1>
-            <p className="text-gray-600">ORNN AI INC - Visitor Registration</p>
+            <h1 className="text-3xl font-bold text-black mb-2">Office Sign In</h1>
+            <p className="text-black">ORNN AI INC - Visitor Registration</p>
           </div>
 
           {submitStatus === 'success' && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-800 font-medium">Thank you for signing in!</p>
-              <p className="text-green-600 text-sm mt-1">Your information has been recorded.</p>
+            <div className="mb-6 p-4 bg-white border-2 border-black rounded-lg">
+              <p className="text-black font-medium">Thank you for signing in!</p>
+              <p className="text-black text-sm mt-1">Your information has been recorded.</p>
             </div>
           )}
 
           {submitStatus === 'error' && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 font-medium">{errorMessage}</p>
+            <div className="mb-6 p-4 bg-white border-2 border-black rounded-lg">
+              <p className="text-black font-medium">{errorMessage}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-black mb-2">
                 Full Name *
               </label>
               <input
@@ -186,14 +196,14 @@ export default function SignInForm() {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border-2 border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition"
                 placeholder="Enter your full name"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-black mb-2">
                 Email Address *
               </label>
               <input
@@ -202,14 +212,14 @@ export default function SignInForm() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border-2 border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition"
                 placeholder="Enter your email address"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="company" className="block text-sm font-medium text-black mb-2">
                 Company *
               </label>
               <input
@@ -218,14 +228,14 @@ export default function SignInForm() {
                 name="company"
                 value={formData.company}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border-2 border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition"
                 placeholder="Enter your company name"
                 required
               />
             </div>
 
             <div>
-              <label htmlFor="purpose" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="purpose" className="block text-sm font-medium text-black mb-2">
                 Purpose of Visit *
               </label>
               <select
@@ -233,7 +243,7 @@ export default function SignInForm() {
                 name="purpose"
                 value={formData.purpose}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border-2 border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition"
                 required
               >
                 <option value="">Select purpose</option>
@@ -244,7 +254,7 @@ export default function SignInForm() {
             </div>
 
             <div>
-              <label htmlFor="citizenship" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="citizenship" className="block text-sm font-medium text-black mb-2">
                 Country of Citizenship *
               </label>
               <select
@@ -252,7 +262,7 @@ export default function SignInForm() {
                 name="citizenship"
                 value={formData.citizenship}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 border-2 border-black rounded-lg focus:ring-2 focus:ring-black focus:border-black transition"
                 required
               >
                 <option value="">Select country</option>
@@ -263,7 +273,7 @@ export default function SignInForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-black mb-2">
                 Signature *
               </label>
               <SignatureGenerator
@@ -284,24 +294,37 @@ export default function SignInForm() {
                     setFormData(prev => ({ ...prev, ndaAgreed: false }));
                   }
                 }}
-                className="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="mt-1 w-5 h-5 text-black border-black rounded focus:ring-black"
               />
-              <label htmlFor="nda" className="ml-3 block text-sm text-gray-700">
+              <label htmlFor="nda" className="ml-3 block text-sm text-black">
                 I agree to the{' '}
                 <button
                   type="button"
                   onClick={() => setShowNDAModal(true)}
-                  className="text-blue-600 hover:text-blue-800 underline"
+                  className="text-black hover:text-black underline"
                 >
                   Non-Disclosure Agreement
                 </button>
               </label>
             </div>
 
+            <div className="flex items-start mt-4">
+              <input
+                type="checkbox"
+                id="citizenship-declaration"
+                checked={formData.citizenshipDeclaration}
+                onChange={(e) => setFormData(prev => ({ ...prev, citizenshipDeclaration: e.target.checked }))}
+                className="mt-1 w-5 h-5 text-black border-black rounded focus:ring-black"
+              />
+              <label htmlFor="citizenship-declaration" className="ml-3 block text-sm text-black">
+                I am not a citizen or do not hold any visa for: Cuba, Iran, North Korea, Ukraine, China
+              </label>
+            </div>
+
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-white hover:text-black focus:ring-4 focus:ring-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Submitting...' : 'Sign In'}
             </button>

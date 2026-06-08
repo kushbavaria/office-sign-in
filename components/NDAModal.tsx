@@ -56,13 +56,13 @@ export default function NDAModal({ isOpen, onClose, onAgree }: NDAModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-900">Non-Disclosure Agreement</h2>
+        <div className="p-6 border-b-2 border-black flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-black">Non-Disclosure Agreement</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+            className="text-black hover:text-black text-2xl font-bold"
           >
             ×
           </button>
@@ -70,25 +70,25 @@ export default function NDAModal({ isOpen, onClose, onAgree }: NDAModalProps) {
 
         <div className="p-6 overflow-y-auto flex-1">
           <div className="prose max-w-none">
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-black mb-4">
               Please read the following Non-Disclosure Agreement carefully. By signing in to ORNN AI INC, you agree to be bound by its terms.
             </p>
-            <pre className="whitespace-pre-wrap font-sans text-sm text-gray-800 leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <pre className="whitespace-pre-wrap font-sans text-sm text-black leading-relaxed bg-white p-4 rounded-lg border-2 border-black">
               {NDA_TEXT}
             </pre>
           </div>
         </div>
 
-        <div className="p-6 border-t border-gray-200 flex justify-end gap-4">
+        <div className="p-6 border-t-2 border-black flex justify-end gap-4">
           <button
             onClick={onClose}
-            className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+            className="px-6 py-2 border-2 border-black rounded-lg text-black hover:bg-white transition"
           >
             Decline
           </button>
           <button
             onClick={onAgree}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="px-6 py-2 bg-black text-white rounded-lg hover:bg-white hover:text-black transition"
           >
             I Agree
           </button>
