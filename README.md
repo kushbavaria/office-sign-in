@@ -43,7 +43,7 @@ npm install
 Create a `.env.local` file in the project root:
 
 ```env
-NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_admin_password_here
+ADMIN_PASSWORD=your_secure_admin_password_here
 ```
 
 **Important**: Change the default password to a secure password before deploying.
@@ -82,7 +82,7 @@ git push origin main
 3. Import your GitHub repository
 4. Vercel will automatically detect it as a Next.js project
 5. Add environment variable in the Vercel dashboard:
-   - `NEXT_PUBLIC_ADMIN_PASSWORD` - Your secure admin password
+   - `ADMIN_PASSWORD` - Your secure admin password
 6. Click "Deploy"
 
 ### 3. Configure Domain (Optional)
@@ -166,7 +166,7 @@ The NDA text is also available as a Word document in the project root for refere
 
 If you can't access the admin dashboard:
 1. Verify the admin password in your `.env.local` file
-2. Ensure the environment variable is named `NEXT_PUBLIC_ADMIN_PASSWORD`
+2. Ensure the environment variable is named `ADMIN_PASSWORD`
 3. If deployed to Vercel, check that the environment variable is set in the dashboard
 
 ### Form Submission Issues

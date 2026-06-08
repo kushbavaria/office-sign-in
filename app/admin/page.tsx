@@ -8,17 +8,41 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [visitors, setVisitors] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
 
-  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123'; // Default password, should be changed in env
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'; // Default password, should be changed in env
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      setError('');
-      loadVisitors();
-    } else {
-      setError('Invalid password');
+    setAuthLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setIsAuthenticated(true);
+          setError('');
+          loadVisitors();
+        } else {
+          setError('Invalid password');
+        }
+      } else {
+        setError('Invalid password');
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      setError('Authentication failed');
+    } finally {
+      setAuthLoading(false);
     }
   };
 
@@ -103,9 +127,10 @@ export default function AdminPage() {
             )}
             <button
               type="submit"
-              className="w-full bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-white hover:text-black focus:ring-4 focus:ring-gray-300 transition"
+              disabled={authLoading}
+              className="w-full bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-white hover:text-black focus:ring-4 focus:ring-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Login
+              {authLoading ? 'Authenticating...' : 'Login'}
             </button>
           </form>
         </div>

@@ -7,10 +7,10 @@ To set up the office sign-in app, you'll need to configure the following environ
 Add the following to your `.env.local` file:
 
 ```
-NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_admin_password_here
+ADMIN_PASSWORD=your_secure_admin_password_here
 ```
 
-- `NEXT_PUBLIC_ADMIN_PASSWORD`: The password for accessing the admin dashboard to export visitor data
+- `ADMIN_PASSWORD`: The password for accessing the admin dashboard to export visitor data
 
 **Important**: Change the default password to a secure password before deploying.
 
@@ -26,7 +26,7 @@ Access the admin dashboard at `/admin` to:
 When deploying to Vercel, add the environment variable in the Vercel dashboard:
 1. Go to your project settings
 2. Navigate to Environment Variables
-3. Add the `NEXT_PUBLIC_ADMIN_PASSWORD` variable
+3. Add the `ADMIN_PASSWORD` variable
 4. Redeploy your application
 
 ## Data Storage
