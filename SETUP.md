@@ -1,51 +1,38 @@
 # Environment Variables Setup
 
-To set up the Google Sheets integration, you'll need to configure the following environment variables:
+To set up the office sign-in app, you'll need to configure the following environment variable:
 
-## Google Sheets Setup
+## Environment Variables
 
-1. **Create a Google Cloud Project**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select an existing one
-   - Enable the Google Sheets API
+Add the following to your `.env.local` file:
 
-2. **Create a Service Account**
-   - Go to IAM & Admin > Service Accounts
-   - Create a new service account
-   - Grant it "Editor" role for Google Sheets
-   - Create a JSON key for the service account
-   - Download the JSON file
+```
+NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_admin_password_here
+```
 
-3. **Create a Google Sheet**
-   - Create a new Google Sheet with the following columns:
-     - Timestamp
-     - Name
-     - Email
-     - Company
-     - Purpose
-     - Citizenship
-     - NDA_Agreed
-     - Signature
-   - Share the sheet with the service account email (give it Editor access)
+- `NEXT_PUBLIC_ADMIN_PASSWORD`: The password for accessing the admin dashboard to export visitor data
 
-4. **Configure Environment Variables**
+**Important**: Change the default password to a secure password before deploying.
 
-   Add the following to your `.env.local` file:
+## Admin Dashboard
 
-   ```
-   GOOGLE_SPREADSHEET_ID=your_spreadsheet_id_here
-   GOOGLE_SERVICE_ACCOUNT_EMAIL=your_service_account_email@project-id.iam.gserviceaccount.com
-   GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYour private key here\n-----END PRIVATE KEY-----\n"
-   ```
-
-   - `GOOGLE_SPREADSHEET_ID`: The ID from your Google Sheet URL (the long string between `/d/` and `/edit`)
-   - `GOOGLE_SERVICE_ACCOUNT_EMAIL`: The email address of your service account
-   - `GOOGLE_PRIVATE_KEY`: The private key from your service account JSON file (make sure to preserve the `\n` characters)
+Access the admin dashboard at `/admin` to:
+- View all visitor sign-ins
+- Export data to Excel
+- Clear all visitor data
 
 ## For Vercel Deployment
 
-When deploying to Vercel, add these environment variables in the Vercel dashboard:
+When deploying to Vercel, add the environment variable in the Vercel dashboard:
 1. Go to your project settings
 2. Navigate to Environment Variables
-3. Add the three variables listed above
+3. Add the `NEXT_PUBLIC_ADMIN_PASSWORD` variable
 4. Redeploy your application
+
+## Data Storage
+
+The app uses local JSON file storage for visitor data:
+- Data is stored in the `data/visitors.json` file
+- The `data/` directory is automatically created if it doesn't exist
+- This directory is excluded from git for security
+- For production deployment on Vercel, consider using a database or external storage solution for persistence

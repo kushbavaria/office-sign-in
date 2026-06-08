@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { addVisitorToSheet } from '@/lib/googleSheets';
+import { addVisitor } from '@/lib/storage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add visitor data to Google Sheets
-    const result = await addVisitorToSheet({
+    // Add visitor data to local storage
+    const result = addVisitor({
       timestamp,
       name,
       email,
