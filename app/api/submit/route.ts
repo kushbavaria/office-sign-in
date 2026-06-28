@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add visitor data to local storage
-    const result = addVisitor({
+    // Add visitor data to blob storage
+    const result = await addVisitor({
       timestamp,
       name,
       email,

@@ -3,7 +3,7 @@ import { clearVisitors } from '@/lib/storage';
 
 export async function POST() {
   try {
-    const result = clearVisitors();
+    const result = await clearVisitors();
     if (result.success) {
       return NextResponse.json(
         { success: true, message: 'Visitor data cleared successfully' },

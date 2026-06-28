@@ -3,7 +3,7 @@ import { getVisitors } from '@/lib/storage';
 
 export async function GET() {
   try {
-    const visitors = getVisitors();
+    const visitors = await getVisitors();
     return NextResponse.json(visitors);
   } catch (error) {
     console.error('Error fetching visitors:', error);

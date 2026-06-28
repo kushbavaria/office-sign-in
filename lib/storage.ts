@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { put, list, del } from '@vercel/blob';
 
 interface VisitorData {
   timestamp: string;
@@ -13,24 +12,20 @@ interface VisitorData {
   signature: string;
 }
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const DATA_FILE = path.join(DATA_DIR, 'visitors.json');
+const PREFIX = 'visitors/';
 
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-// Initialize data file if it doesn't exist
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-}
-
-export function addVisitor(data: VisitorData): { success: boolean; error?: string } {
+export async function addVisitor(data: VisitorData): Promise<{ success: boolean; error?: string }> {
   try {
-    const existingData = getVisitors();
-    existingData.push(data);
-    fs.writeFileSync(DATA_FILE, JSON.stringify(existingData, null, 2));
+    const safeTimestamp = (data.timestamp || new Date().toISOString()).replace(/[^0-9T-Za-z-]/g, '-');
+    const random = Math.random().toString(36).slice(2, 10);
+    const pathname = `${PREFIX}${safeTimestamp}-${random}.json`;
+
+    await put(pathname, JSON.stringify(data, null, 2), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false,
+    });
+
     return { success: true };
   } catch (error) {
     console.error('Error saving visitor data:', error);
@@ -38,19 +33,50 @@ export function addVisitor(data: VisitorData): { success: boolean; error?: strin
   }
 }
 
-export function getVisitors(): VisitorData[] {
+export async function getVisitors(): Promise<VisitorData[]> {
   try {
-    const data = fs.readFileSync(DATA_FILE, 'utf-8');
-    return JSON.parse(data);
+    const visitors: VisitorData[] = [];
+    let cursor: string | undefined;
+
+    do {
+      const result = await list({ prefix: PREFIX, limit: 1000, cursor });
+      const fetched = await Promise.all(
+        result.blobs.map(async (blob) => {
+          const response = await fetch(blob.url);
+          const text = await response.text();
+          try {
+            return JSON.parse(text) as VisitorData;
+          } catch {
+            return null;
+          }
+        })
+      );
+      for (const v of fetched) {
+        if (v) visitors.push(v);
+      }
+      cursor = result.hasMore ? result.cursor : undefined;
+    } while (cursor);
+
+    // Sort newest first by timestamp
+    visitors.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
+    return visitors;
   } catch (error) {
     console.error('Error reading visitor data:', error);
     return [];
   }
 }
 
-export function clearVisitors(): { success: boolean; error?: string } {
+export async function clearVisitors(): Promise<{ success: boolean; error?: string }> {
   try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
+    let cursor: string | undefined;
+    do {
+      const result = await list({ prefix: PREFIX, limit: 1000, cursor });
+      if (result.blobs.length > 0) {
+        await del(result.blobs.map((blob) => blob.url));
+      }
+      cursor = result.hasMore ? result.cursor : undefined;
+    } while (cursor);
+
     return { success: true };
   } catch (error) {
     console.error('Error clearing visitor data:', error);

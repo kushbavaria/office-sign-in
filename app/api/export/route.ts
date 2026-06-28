@@ -4,7 +4,7 @@ import * as XLSX from 'xlsx';
 
 export async function GET() {
   try {
-    const visitors = getVisitors();
+    const visitors = await getVisitors();
 
     // Format data for Excel
     const excelData = visitors.map(visitor => ({
