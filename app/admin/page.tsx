@@ -198,6 +198,7 @@ export default function AdminPage() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Citizenship</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">NDA</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Citizenship Declaration</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">NDA PDF</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-black">
@@ -241,6 +242,20 @@ export default function AdminPage() {
                           <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-black text-white border-2 border-black">
                             No
                           </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
+                        {visitor.ndaPdfUrl ? (
+                          <a
+                            href={visitor.ndaPdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-black underline hover:text-black"
+                          >
+                            View PDF
+                          </a>
+                        ) : (
+                          <span className="text-gray-400">—</span>
                         )}
                       </td>
                     </tr>

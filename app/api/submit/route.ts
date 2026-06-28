@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addVisitor } from '@/lib/storage';
+import { generateNDAPdf } from '@/lib/pdf-generator';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +25,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add visitor data to blob storage
+    // Generate the signed NDA PDF
+    let pdfBuffer: Buffer;
+    try {
+      pdfBuffer = await generateNDAPdf({
+        name,
+        email,
+        company,
+        purpose,
+        citizenship,
+        timestamp,
+        signature,
+      });
+    } catch (pdfError) {
+      console.error('Error generating NDA PDF:', pdfError);
+      return NextResponse.json(
+        { error: 'Failed to generate NDA PDF' },
+        { status: 500 }
+      );
+    }
+
+    // Add visitor data + PDF to blob storage
     const result = await addVisitor({
       timestamp,
       name,
@@ -35,7 +56,7 @@ export async function POST(request: NextRequest) {
       ndaAgreed,
       citizenshipDeclaration,
       signature,
-    });
+    }, pdfBuffer);
 
     if (!result.success) {
       return NextResponse.json(
@@ -45,7 +66,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: true, message: 'Visitor data submitted successfully' },
+      { success: true, message: 'Visitor data submitted successfully', ndaPdfUrl: result.ndaPdfUrl },
       { status: 200 }
     );
   } catch (error) {

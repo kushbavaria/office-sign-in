@@ -16,7 +16,8 @@ export async function GET() {
       'Citizenship': visitor.citizenship,
       'NDA Agreed': visitor.ndaAgreed ? 'Yes' : 'No',
       'Citizenship Declaration': visitor.citizenshipDeclaration ? 'Yes' : 'No',
-      'Signature': '[Signature Image]',
+      'NDA PDF': visitor.ndaPdfUrl || '',
+      'Signature': '[See NDA PDF]',
     }));
 
     // Create workbook

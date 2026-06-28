@@ -10,23 +10,36 @@ interface VisitorData {
   ndaAgreed: boolean;
   citizenshipDeclaration: boolean;
   signature: string;
+  ndaPdfUrl?: string;
 }
 
 const PREFIX = 'visitors/';
 
-export async function addVisitor(data: VisitorData): Promise<{ success: boolean; error?: string }> {
+export async function addVisitor(
+  data: VisitorData,
+  pdfBuffer: Buffer
+): Promise<{ success: boolean; error?: string; ndaPdfUrl?: string }> {
   try {
     const safeTimestamp = (data.timestamp || new Date().toISOString()).replace(/[^0-9T-Za-z-]/g, '-');
     const random = Math.random().toString(36).slice(2, 10);
-    const pathname = `${PREFIX}${safeTimestamp}-${random}.json`;
+    const baseName = `${PREFIX}${safeTimestamp}-${random}`;
 
-    await put(pathname, JSON.stringify(data, null, 2), {
+    // Upload the signed NDA PDF
+    const pdfBlob = await put(`${baseName}.pdf`, pdfBuffer, {
+      access: 'public',
+      contentType: 'application/pdf',
+      addRandomSuffix: false,
+    });
+
+    // Upload the visitor JSON record (references the PDF URL)
+    const record: VisitorData = { ...data, ndaPdfUrl: pdfBlob.url };
+    await put(`${baseName}.json`, JSON.stringify(record, null, 2), {
       access: 'public',
       contentType: 'application/json',
       addRandomSuffix: false,
     });
 
-    return { success: true };
+    return { success: true, ndaPdfUrl: pdfBlob.url };
   } catch (error) {
     console.error('Error saving visitor data:', error);
     return { success: false, error: 'Failed to save visitor data' };
@@ -40,8 +53,10 @@ export async function getVisitors(): Promise<VisitorData[]> {
 
     do {
       const result = await list({ prefix: PREFIX, limit: 1000, cursor });
+      // Only fetch JSON files (skip PDFs)
+      const jsonBlobs = result.blobs.filter((b) => b.pathname.endsWith('.json'));
       const fetched = await Promise.all(
-        result.blobs.map(async (blob) => {
+        jsonBlobs.map(async (blob) => {
           const response = await fetch(blob.url);
           const text = await response.text();
           try {

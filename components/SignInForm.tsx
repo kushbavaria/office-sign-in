@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import SignatureGenerator from './SignatureGenerator';
+import SignaturePad from './SignaturePad';
 import NDAModal from './NDAModal';
 
 interface FormData {
@@ -75,7 +75,7 @@ export default function SignInForm() {
     citizenshipDeclaration: false,
   });
 
-  const [signature, setSignature] = useState<string>('');
+  const [signature, setSignature] = useState<string | null>(null);
   const [showNDAModal, setShowNDAModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -84,6 +84,10 @@ export default function SignInForm() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSignatureChange = (sig: string | null) => {
+    setSignature(sig);
   };
 
   const handleNDAAgree = () => {
@@ -120,7 +124,7 @@ export default function SignInForm() {
     }
 
     if (!signature) {
-      setErrorMessage('Please generate your signature');
+      setErrorMessage('Please draw your signature');
       setSubmitStatus('error');
       setIsSubmitting(false);
       return;
@@ -140,7 +144,8 @@ export default function SignInForm() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit form');
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to submit form');
       }
 
       setSubmitStatus('success');
@@ -154,14 +159,20 @@ export default function SignInForm() {
         ndaAgreed: false,
         citizenshipDeclaration: false,
       });
-      setSignature('');
+      setSignature(null);
     } catch (error) {
-      setErrorMessage('Failed to submit. Please try again.');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to submit. Please try again.');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const visitDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
     <div className="min-h-screen bg-white py-12 px-4">
@@ -175,7 +186,7 @@ export default function SignInForm() {
           {submitStatus === 'success' && (
             <div className="mb-6 p-4 bg-white border-2 border-black rounded-lg">
               <p className="text-black font-medium">Thank you for signing in!</p>
-              <p className="text-black text-sm mt-1">Your information has been recorded.</p>
+              <p className="text-black text-sm mt-1">Your information and signed NDA have been recorded.</p>
             </div>
           )}
 
@@ -276,9 +287,8 @@ export default function SignInForm() {
               <label className="block text-sm font-medium text-black mb-2">
                 Signature *
               </label>
-              <SignatureGenerator
-                name={formData.name}
-                onSignatureGenerated={setSignature}
+              <SignaturePad
+                onSignatureChange={handleSignatureChange}
               />
             </div>
 
@@ -335,6 +345,9 @@ export default function SignInForm() {
           isOpen={showNDAModal}
           onClose={() => setShowNDAModal(false)}
           onAgree={handleNDAAgree}
+          visitorName={formData.name}
+          visitorCompany={formData.company}
+          visitDate={visitDate}
         />
       </div>
     </div>
